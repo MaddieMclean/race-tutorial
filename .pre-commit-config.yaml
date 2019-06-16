@@ -1,0 +1,35 @@
+repos:
+  - repo: https://github.com/pre-commit/mirrors-isort
+    rev: v4.3.17
+    hooks:
+      - id: isort
+        args: ["-m=3",
+              "-up",
+              "-l=88",
+              "-tc"]
+
+  - repo: https://github.com/ambv/black
+    rev: stable
+    hooks:
+      - id: black
+        language_version: python3.6
+        args: ['--line-length=88']
+        exclude: \.git|\.hg|\.mypy_cache|\.tox|\.venv|_build|buck-out|build|dist
+
+  - repo: git@github.com:humitos/mirrors-autoflake.git
+    rev: v1.1
+    hooks:
+      - id: autoflake
+        language_version: python3.6
+        args: ['--in-place', '--remove-all-unused-imports', '--remove-unused-variable']
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v1.2.3
+    hooks:
+      - id: flake8
+        language_version: python3.6
+        args: ['--ignore=E203,E266,E501,W503,F403,F401',
+                '--max-line-length=88',
+                '--max-complexity=18',
+                '--select=B,C,E,F,W,T4,B9',
+                '--exclude=.venv,venv']
