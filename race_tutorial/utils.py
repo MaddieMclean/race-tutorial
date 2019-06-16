@@ -1,5 +1,5 @@
 from collections import namedtuple
-from typing import Callable
+from typing import Callable, Tuple
 
 import pygame
 
@@ -36,6 +36,10 @@ def bound(low: int = 0, high: int = WINDOW_SIZE.x) -> Callable[[int], int]:
 
 def center_surface(surface: pygame.Surface) -> pygame.Rect:
     return position_rect(surface.get_rect(), CENTER_POINT)
+
+
+def timer_settings(val: int) -> Tuple[int, int]:
+    return pygame.USEREVENT, val * 1000
 
 
 def position_rect(rect: pygame.Rect, point: Point) -> pygame.Rect:

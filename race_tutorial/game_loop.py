@@ -5,9 +5,9 @@ import race_tutorial.utils as utl
 
 
 class GameLoop(object):
-    def __init__(self, caption, window, frame_limit, level=1):
+    def __init__(self, caption, window, frame_limit, level=1, level_time=5):
         pygame.init()
-        pygame.time.set_timer(pygame.USEREVENT, 5000)
+        pygame.time.set_timer(*utl.timer_settings(level_time))
         pygame.display.set_caption(caption)
 
         self.objects = list()
