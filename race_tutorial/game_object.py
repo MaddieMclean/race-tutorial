@@ -50,6 +50,16 @@ class Car(GameObject):
         super().__init__(img, starting_location, speed)
 
         self.crash_text = "You Crashed"
+        self.collision_rect = self.build_collision_rect(0.2)
+
+    def update_position(self, change: utl.Point):
+        super().update_position(change)
+        self.collision_rect.center = self.rect.center
+
+    def build_collision_rect(self, shrink_factor: float) -> pygame.Rect:
+        width = -int(self.rect.width * shrink_factor)
+        height = -int(self.rect.height * shrink_factor)
+        return self.rect.copy().inflate(width, height)
 
     def crash(self, surface: pygame.Surface):
         font = pygame.font.Font("freesansbold.ttf", 115)
@@ -59,7 +69,7 @@ class Car(GameObject):
         time.sleep(2)
 
     def collided(self, objects: List[GameObject]) -> bool:
-        if self.rect.collidelist([obj.rect for obj in objects]) != -1:
+        if self.collision_rect.collidelist([obj.rect for obj in objects]) != -1:
             return True
         return False
 

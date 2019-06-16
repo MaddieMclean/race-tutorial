@@ -11,10 +11,12 @@ class GameLoop(object):
         pygame.display.set_caption(caption)
 
         self.objects = list()
+        self.score = 0
         self.game_display = pygame.display.set_mode(window)
         self.clock = pygame.time.Clock()
         self.frame_limit = frame_limit
         self.level = level
+        self.font = pygame.font.SysFont(None, 25)
 
     def run(self):
         crashed = False
@@ -67,10 +69,12 @@ class GameLoop(object):
 
         for i in sorted(to_delete, reverse=True):
             self.objects.pop(i)
+            self.score += 10
 
     def draw(self, car: game_object.Car, crashed: bool):
         self.game_display.fill(utl.WHITE)
         self.draw_objects(car, *self.objects)
+        self.draw_score()
 
         if crashed:
             car.crash(self.game_display)
@@ -81,3 +85,7 @@ class GameLoop(object):
         for obj in args:
             img, position = obj.draw()
             self.game_display.blit(img, position)
+
+    def draw_score(self):
+        text = self.font.render(f"Score: {self.score}", True, utl.BLACK)
+        self.game_display.blit(text, (0, 0))
