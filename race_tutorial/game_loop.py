@@ -57,9 +57,8 @@ class GameLoop(object):
         to_delete = list()
 
         if len(self.objects) < max_on_screen:
-            self.objects.extend(
-                game_object.Obstacle.spawn(max_on_screen - len(self.objects))
-            )
+            number_to_spawn = max_on_screen - len(self.objects)
+            self.objects.extend(game_object.Obstacle.spawn(number_to_spawn))
 
         for i, obstacle in enumerate(self.objects):
             obstacle.update_position(utl.Point(y=obstacle.speed, x=0))

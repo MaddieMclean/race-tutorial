@@ -56,6 +56,5 @@ def valid_event(event: pygame.event) -> bool:
     return False
 
 
-def build_lanes(lanes: int = 10) -> List[int]:
-    lane_size = int(WINDOW_SIZE.x / lanes)
-    return [n * lane_size for n in range(lanes)]
+def build_lanes(width: int) -> List[int]:
+    return [n * width for n in range(int(WINDOW_SIZE.x / width))]

@@ -8,21 +8,13 @@ import race_tutorial.utils as utl
 
 
 class GameObject(object):
-    def __init__(
-        self,
-        img: pygame.Surface,
-        starting_location: utl.Point,
-        dimensions: utl.Point,
-        speed: int,
-    ):
+    def __init__(self, img: pygame.Surface, starting_location: utl.Point, speed: int):
         self.img = img
         self.rect = img.get_rect()
         self.speed = speed
-        self.width = dimensions.x
-        self.height = dimensions.y
 
-        self.bound_x = utl.bound(high=utl.WINDOW_SIZE.x - self.width)
-        self.bound_y = utl.bound(high=utl.WINDOW_SIZE.y - self.height)
+        self.bound_x = utl.bound(high=utl.WINDOW_SIZE.x - self.rect.width)
+        self.bound_y = utl.bound(high=utl.WINDOW_SIZE.y - self.rect.height)
 
         self.x = starting_location.x
         self.y = starting_location.y
@@ -53,10 +45,9 @@ class GameObject(object):
 
 class Car(GameObject):
     def __init__(self, starting_location: utl.Point):
-        speed = 5
-        dimensions = utl.Point(x=73, y=0)
+        speed = 10
         img = pygame.image.load(f"{utl.IMAGE_PATH}/racecar.png")
-        super().__init__(img, starting_location, dimensions, speed)
+        super().__init__(img, starting_location, speed)
 
         self.crash_text = "You Crashed"
 
@@ -74,8 +65,6 @@ class Car(GameObject):
 
 
 class Obstacle(GameObject):
-    LANES = utl.build_lanes()
-
     def __init__(
         self,
         starting_location: utl.Point,
@@ -85,7 +74,7 @@ class Obstacle(GameObject):
     ):
         img = pygame.Surface(dimensions)
         img.fill(colour)
-        super().__init__(img, starting_location, dimensions, speed)
+        super().__init__(img, starting_location, speed)
 
     @property
     def y(self) -> int:
@@ -95,10 +84,11 @@ class Obstacle(GameObject):
     def y(self, v: int):
         self.rect.y = v
 
-    @staticmethod
-    def spawn(number: int):
-        start = utl.Point(x=Obstacle.LANES[random.randint(0, 9)], y=-100)
-        dimensions = utl.Point(x=50, y=50)
+    @classmethod
+    def spawn(cls, number: int, width: int = 50):
+        lanes = utl.build_lanes(width)
+        start = utl.Point(x=lanes[random.randrange(len(lanes))], y=-100)
+        dimensions = utl.Point(x=width, y=width)
         speed = random.randint(2, 8)
         return [
             Obstacle(start, dimensions, speed, colour=utl.RED) for _ in range(number)
