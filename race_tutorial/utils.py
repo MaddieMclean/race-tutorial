@@ -1,5 +1,5 @@
 from collections import namedtuple
-from typing import Callable, Tuple
+from typing import Callable, List, Tuple
 
 import pygame
 
@@ -54,3 +54,8 @@ def valid_event(event: pygame.event) -> bool:
         return True
 
     return False
+
+
+def build_lanes(lanes: int = 10) -> List[int]:
+    lane_size = int(WINDOW_SIZE.x / lanes)
+    return [n * lane_size for n in range(lanes)]

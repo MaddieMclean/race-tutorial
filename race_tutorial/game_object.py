@@ -74,6 +74,8 @@ class Car(GameObject):
 
 
 class Obstacle(GameObject):
+    LANES = utl.build_lanes()
+
     def __init__(
         self,
         starting_location: utl.Point,
@@ -95,7 +97,7 @@ class Obstacle(GameObject):
 
     @staticmethod
     def spawn(number: int):
-        start = utl.Point(x=random.randint(0, utl.WINDOW_SIZE.x), y=-100)
+        start = utl.Point(x=Obstacle.LANES[random.randint(0, 9)], y=-100)
         dimensions = utl.Point(x=50, y=50)
         speed = random.randint(2, 8)
         return [
