@@ -1,32 +1,42 @@
 import pygame
 
-import race_tutorial.game_object as game_object
 import race_tutorial.utils as utl
+from race_tutorial import game_object, manager
 
 
 class GameLoop(object):
-    def __init__(self, caption, window, frame_limit, level=1, level_time=5):
+    def __init__(self, caption, window, frame_limit, level=1, level_time=20):
         pygame.init()
         pygame.time.set_timer(*utl.timer_settings(level_time))
         pygame.display.set_caption(caption)
 
-        self.objects = list()
+        self._level = 0
         self.score = 0
+        self.bound_level = utl.bound(high=10)
         self.game_display = pygame.display.set_mode(window)
         self.clock = pygame.time.Clock()
         self.frame_limit = frame_limit
         self.level = level
         self.font = pygame.font.SysFont(None, 25)
 
+    @property
+    def level(self):
+        return self._level
+
+    @level.setter
+    def level(self, v: int):
+        self._level = self.bound_level(v)
+
     def run(self):
         crashed = False
         car_change = utl.NEUTRAL
         car = game_object.Car(utl.STARTING_POINT)
+        obstacles = manager.ObstacleManager()
 
         while not crashed:
             car_change = self.event(car_change)
-            crashed = self.update(car, car_change)
-            self.draw(car, crashed)
+            crashed = self.update(car, obstacles, car_change)
+            self.draw(car, obstacles, crashed)
             self.clock.tick(self.frame_limit)
 
     def event(self, car_change: int) -> int:
@@ -47,33 +57,22 @@ class GameLoop(object):
 
         return car_change
 
-    def update(self, car: game_object.Car, car_change: int) -> bool:
+    def update(
+        self, car: game_object.Car, obstacles: manager.ObstacleManager, car_change: int
+    ) -> bool:
         if car_change == pygame.QUIT:
             return True
 
         car.update_position(utl.Point(x=car_change * car.speed, y=0))
-        self.update_obstacles(max_on_screen=self.level)
-        return car.collided(self.objects)
+        obstacles.spawn(self.level)
+        self.score = obstacles.update(self.score)
+        return car.collided(obstacles.objects)
 
-    def update_obstacles(self, max_on_screen: int):
-        to_delete = list()
-
-        if len(self.objects) < max_on_screen:
-            number_to_spawn = max_on_screen - len(self.objects)
-            self.objects.extend(game_object.Obstacle.spawn(number_to_spawn))
-
-        for i, obstacle in enumerate(self.objects):
-            obstacle.update_position(utl.Point(y=obstacle.speed, x=0))
-            if obstacle.y > utl.WINDOW_SIZE.y:
-                to_delete.append(i)
-
-        for i in sorted(to_delete, reverse=True):
-            self.objects.pop(i)
-            self.score += 10
-
-    def draw(self, car: game_object.Car, crashed: bool):
+    def draw(
+        self, car: game_object.Car, obstacles: manager.ObstacleManager, crashed: bool
+    ):
         self.game_display.fill(utl.WHITE)
-        self.draw_objects(car, *self.objects)
+        self.draw_objects(car, *obstacles.objects)
         self.draw_score()
 
         if crashed:

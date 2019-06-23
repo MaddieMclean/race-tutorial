@@ -1,4 +1,3 @@
-import random
 import time
 from typing import List, Tuple
 
@@ -84,6 +83,7 @@ class Obstacle(GameObject):
     ):
         img = pygame.Surface(dimensions)
         img.fill(colour)
+        self.score_value = int((dimensions.x * dimensions.y) / 100)
         super().__init__(img, starting_location, speed)
 
     @property
@@ -93,13 +93,3 @@ class Obstacle(GameObject):
     @y.setter
     def y(self, v: int):
         self.rect.y = v
-
-    @classmethod
-    def spawn(cls, number: int, width: int = 50):
-        lanes = utl.build_lanes(width)
-        start = utl.Point(x=lanes[random.randrange(len(lanes))], y=-100)
-        dimensions = utl.Point(x=width, y=width)
-        speed = random.randint(2, 8)
-        return [
-            Obstacle(start, dimensions, speed, colour=utl.RED) for _ in range(number)
-        ]

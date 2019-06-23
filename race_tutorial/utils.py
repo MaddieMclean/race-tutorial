@@ -1,5 +1,5 @@
 from collections import namedtuple
-from typing import Callable, List, Tuple
+from typing import Callable, Tuple
 
 import pygame
 
@@ -14,6 +14,8 @@ RIGHT = 1
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
 
 GAME_EVENTS = (pygame.QUIT, pygame.USEREVENT)
 CONTROLS = Dict(
@@ -54,7 +56,3 @@ def valid_event(event: pygame.event) -> bool:
         return True
 
     return False
-
-
-def build_lanes(width: int) -> List[int]:
-    return [n * width for n in range(int(WINDOW_SIZE.x / width))]
